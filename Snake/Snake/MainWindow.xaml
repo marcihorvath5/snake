@@ -22,21 +22,27 @@
             <Label Grid.Row="0" Content="Pontszám"/>
             <Label Grid.Row="1" Content="Megevett étel"/>
             <Label Grid.Row="2" Content="Kígyó hossza"/>
-            <Label Grid.Row="3" Content="Játék idő"/>
-            <Button Content="Start" Grid.Row="4" 
+            <Label Grid.Row="3" x:Name="LabelPlayTime" />
+            <Button x:Name="ButtonStart"
+                    Content="Start" 
+                    Grid.Row="4" 
                     Padding="10"
                     Margin="10"
                     HorizontalAlignment="Left" 
                     VerticalAlignment="Bottom"
                     Background="Green"
-                    FontWeight="Bold"/>
-            <Button Content="Stop" Grid.Row="4" 
+                    FontWeight="Bold" 
+                    Click="ButtonStart_Click" />
+            <Button x:Name="ButtonStop"
+                    Content="Stop" 
+                    Grid.Row="4" 
                     Padding="10"
                     Margin="10"
                     HorizontalAlignment="Right" 
                     VerticalAlignment="Bottom"
                     Background="Red"
-                    FontWeight="Bold"/>
+                    FontWeight="Bold" 
+                    Click="ButtonStop_Click"/>
 
         </Grid>
         <Grid Grid.Column="0" Background="AliceBlue" Margin="10">
