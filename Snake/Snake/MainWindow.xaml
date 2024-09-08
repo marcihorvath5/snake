@@ -19,9 +19,9 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Label Grid.Row="0" Content="Pontszám"/>
-            <Label Grid.Row="1" Content="Megevett étel"/>
-            <Label Grid.Row="2" Content="Kígyó hossza"/>
+            <Label Grid.Row="0" x:Name="LabelPoints"/>
+            <Label Grid.Row="1" x:Name="LabelEatenMealCount"/>
+            <Label Grid.Row="2" x:Name="LabelSnakeLength"/>
             <Label Grid.Row="3" x:Name="LabelPlayTime" />
             <Button x:Name="ButtonStart"
                     Content="Start" 

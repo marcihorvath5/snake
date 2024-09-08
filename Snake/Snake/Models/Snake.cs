@@ -11,5 +11,6 @@ namespace Snake.Models
     /// </summary>
     public class Snake
     {
+        public int Length { get; set; }
     }
 }
