@@ -36,5 +36,29 @@ namespace Snake
         {
             Arena.Stop();
         }
+
+        /// <summary>
+        /// Az ablakban leütött billentyű figyelése és szűrőse és továbbítása az arenanak
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Left:
+                case Key.Up:
+                case Key.Right:
+                case Key.Down:
+                    // Ha Left vagy Right vagy Up vagy Down akkor ez lefut
+                    Arena.Keydown(e.Key);
+
+                    // Ezeket a gombokat nem dolgozza fel6
+                    e.Handled = true;
+                    break;
+                default:
+                    break;
+            }   
+        }
     }
 }

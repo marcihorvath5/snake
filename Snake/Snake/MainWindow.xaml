@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Snake"
         mc:Ignorable="d"
+        KeyDown="Window_KeyDown"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -33,6 +34,9 @@
                     Background="Green"
                     FontWeight="Bold" 
                     Click="ButtonStart_Click" />
+
+            <Label Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Bottom" x:Name="LabelKeyDown"/>
+
             <Button x:Name="ButtonStop"
                     Content="Stop" 
                     Grid.Row="4" 

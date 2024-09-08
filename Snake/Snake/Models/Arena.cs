@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace Snake.Models
@@ -68,6 +69,32 @@ namespace Snake.Models
         }
 
         /// <summary>
+        /// Ha leütjük valamelyik key gombot itt megérkezik
+        /// És a key parameter jelzi hogy melyik
+        /// </summary>
+        internal void Keydown(Key key)
+        {
+            // A leütött billentyű jelzi merre kéne mennie a kígyónak
+            switch (key)
+            {
+                case Key.Left:
+                    Snake.Directon = SnakeDirections.Left;
+                    break;
+                case Key.Up:
+                    Snake.Directon = SnakeDirections.Up;
+                    break;
+                case Key.Right:
+                    Snake.Directon = SnakeDirections.Right;
+                    break;
+                case Key.Down:
+                    Snake.Directon = SnakeDirections.Down;
+                    break;
+                default:
+                    throw new Exception($"Erre a gombra  nem vagyunk felkészülve {key}");
+            }
+        }
+
+        /// <summary>
         /// Ha a játéknak eljön a következő órajele akkor ezt a függvényt hívjuk meg 
         /// </summary>
         private void ItIsTimeToShow(object? sender, EventArgs e)
@@ -88,6 +115,7 @@ namespace Snake.Models
             MainWindow.LabelPoints.Content = $"Pontszám: {Points}";
             MainWindow.LabelEatenMealCount.Content = $"Megevett ételek: {EatenMealsCount}";
             MainWindow.LabelSnakeLength.Content = $"Kígyó hossza: {Snake.Length}";
+            MainWindow.LabelKeyDown.Content = $"{Snake.Directon}";
         }
 
         /// <summary>
@@ -101,6 +129,5 @@ namespace Snake.Models
             EatenMealsCount = 0;
             Snake = new Snake();
         }
-
     }
 }
