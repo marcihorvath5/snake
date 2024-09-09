@@ -12,6 +12,9 @@ namespace Snake.Models
     public class Snake
     {
         public int Length { get; set;  }
+        /// <summary>
+        /// Mutatja hogy a kígyó feje éppen merre áll
+        /// </summary>
         public SnakeDirections Directon { get; set; }
     }
 }
