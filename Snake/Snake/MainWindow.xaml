@@ -50,7 +50,7 @@
                     Click="ButtonStop_Click"/>
 
         </Grid>
-        <Grid Grid.Column="0" Background="AliceBlue" Margin="10">
+        <Grid x:Name="GridArena" Grid.Column="0" Background="AliceBlue" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0"/>
                 <RowDefinition Height="*"/>
