@@ -16,5 +16,10 @@ namespace Snake.Models
         /// Mutatja hogy a kígyó feje éppen merre áll
         /// </summary>
         public SnakeDirections Directon { get; set; }
+
+        /// <summary>
+        /// A kígyó pontjait tartalmazó lista
+        /// </summary>
+        public List<GamePoint> Gamepoints { get; set; }
     }
 }

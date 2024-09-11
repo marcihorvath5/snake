@@ -67,7 +67,12 @@ namespace Snake.Models
         public void Start()
         {
             SetNewGameCounters();
+            SetSnakeForStart();
             SetMealsForStart();
+            if (GameTimer != null)
+            {// Hamár korábban elindítottuk a játékot akkor ezt most megállítjuk
+                GameTimer.Stop();
+            }
             GameTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(100), DispatcherPriority.Normal, ItIsTimeToShow, Application.Current.Dispatcher);
 
         }
@@ -142,20 +147,55 @@ namespace Snake.Models
             Snake = new Snake();
         }
 
+        private void SetSnakeForStart()
+        {
+            Snake = new Snake();
+            Snake.Gamepoints = new List<GamePoint>();
+
+            // kígyó fejét generáljuk
+            var head = GetRandomGamePoint();
+
+            Snake.Gamepoints.Add(head);            
+
+            // kígyó elhelyezés
+            // vízszintesen rajzolunk ha az x 10-nél nagyobb akkor balra ha kissebb akkor jobbra
+
+            ShowSnakeHead(head);
+
+            for (int i = 0; i < ArenaSettings.SnakeCountForStart; i++)
+            {
+                GamePoint gamePoint;
+                if (head.X <= 10)
+                { // jobbra nyúlik a kígyó
+                    gamePoint = new GamePoint(head.X + i + 1, head.Y);
+                }
+                else
+                { // balra nyúlik
+                     gamePoint = new GamePoint(head.X - i - 1, head.Y);
+                }
+
+                Snake.Gamepoints.Add(gamePoint);
+                ShowSnakeTail(gamePoint);
+            }
+        }
+
         private void SetMealsForStart()
         {
+           
            Meals = new List<GamePoint>();
-            
+
             // Ez így már műödik de:
             // 1.Kibányászást függvénybe kell szervezni
             // 2. nem kezeljük ha egy olyan helyre tesszük a csillagot ahol már van
-            // 3. megjelenítést is ki kell szervezni
-            for (int i = 0; i < ArenaSettings.MealsCountForStart; i++)
+            while (Meals.Count < ArenaSettings.MealsCountForStart)
             {
-                var x = randomNumberGenerator.Next(1, ArenaSettings.maxX + 1);
-                var y = randomNumberGenerator.Next(1, ArenaSettings.maxY + 1);
+                GamePoint meal = GetRandomGamePoint();
 
-                var meal = new GamePoint(x: x, y: y);
+                // Csak akkor továbmenni ha az étel még nincs a táblán és nem ütközik a kígyóval
+                if (!Meals.Any(gamePoint => gamePoint.X == meal.X && gamePoint.Y == meal.Y) && !Snake.Gamepoints.Any(gamePoint => gamePoint.X == meal.X && gamePoint.Y == meal.Y))
+                {
+                    // A megjelenítést és a hozzáadást csak akkor hagyja végre ha az if true-t ad vissza-t ad vissza
+                };
 
                 ShowMeal(meal);
 
@@ -164,6 +204,19 @@ namespace Snake.Models
 
             }
 
+        }
+
+        /// <summary>
+        /// Kijelöl a táblán egy véletlenszerű pontot
+        /// </summary>
+        /// <returns></returns>
+        private GamePoint GetRandomGamePoint()
+        {
+            var x = randomNumberGenerator.Next(1, ArenaSettings.maxX + 1);
+            var y = randomNumberGenerator.Next(1, ArenaSettings.maxY + 1);
+
+            var gamePoint = new GamePoint(x: x, y: y);
+            return gamePoint;
         }
 
         private void ShowMeal(GamePoint meal)
@@ -176,6 +229,31 @@ namespace Snake.Models
             child.Foreground = Brushes.Red;
             child.Spin = true;
             child.SpinDuration = 5;
+        }
+
+        private void ShowSnakeHead(GamePoint head)
+        {
+            // megjelenítés
+            var child = GetGridArenaCell(head);
+
+            // Children gyűjtemény uielementekből áll ahhoz hogy kibányásszuk a fontawesome vezérlőt elkell kérnünk a változózól
+            child.Icon = FontAwesome.WPF.FontAwesomeIcon.Circle;
+            child.Foreground = Brushes.Green;
+        }
+
+        /// <summary>
+        /// A kígyó farkának megjelenítése
+        /// </summary>
+        /// <param name="head"></param>
+        private void ShowSnakeTail(GamePoint tail)
+        {
+            // megjelenítés
+            var child = GetGridArenaCell(tail);
+
+            // Children gyűjtemény uielementekből áll ahhoz hogy kibányásszuk a fontawesome vezérlőt elkell kérnünk a változózól
+            child.Icon = FontAwesome.WPF.FontAwesomeIcon.Circle;
+            child.Foreground = Brushes.Blue;
+
         }
 
         private FontAwesome.WPF.ImageAwesome GetGridArenaCell(GamePoint gamePoint)
