@@ -119,7 +119,88 @@ namespace Snake.Models
             //Frissíteni a játékidőt
             PlayTime = PlayTime.Add(TimeSpan.FromMilliseconds(100));
 
+            // Játékmenet frissítése
+
+            // A kígyó feje mozog a kijelölt irányba
+
+            var oldHead = Snake.Gamepoints[0];
+            GamePoint newHead = null;
+
+            switch (Snake.Directon)
+            {
+                case SnakeDirections.None:
+                    break;
+                case SnakeDirections.Left:
+                    newHead = new GamePoint(oldHead.X - 1, oldHead.Y);
+                    break;
+                case SnakeDirections.Right:
+                    newHead = new GamePoint(oldHead.X + 1, oldHead.Y);
+                    break;
+                case SnakeDirections.Up:
+                    newHead = new GamePoint(oldHead.X, oldHead.Y - 1);
+                    break;  
+                case SnakeDirections.Down:
+                    newHead = new GamePoint(oldHead.X, oldHead.Y + 1);
+                    break;
+                default:
+                    throw new Exception($"Erre nem vagyunk felkészülve {Snake.Directon}");
+            }
+
+            if (newHead == null)
+            { // niincs új fej nincs mit tenni
+                return;
+            }
+            // le kell ellenőrizni hogy
+            // magába harap-e?
+            if(Snake.Gamepoints.Any(gp => gp.X == newHead.X && gp.Y == newHead.Y))
+            { // magába harapott 
+                GameOver();
+            };
+            // Neki ment-e a falnak
+            if (newHead.X == 0 || newHead.Y == 0 || newHead.X == ArenaSettings.maxX + 1 || newHead.Y == ArenaSettings.maxY + 1)
+            {// Falnak ment
+                GameOver();
+            }
+
+            //Megettünk-e ételt
+
+            bool isEated = Meals.Any(gp => gp.X == newHead.X && gp.Y == newHead.Y);
+            if (isEated) 
+            { // ételt evett 
+                Points += 1;
+                Snake.Length += 1;
+                // Ezt az ételt ette
+                var meal = Meals.Single(gp => gp.X == newHead.X && gp.Y == newHead.Y);
+                HideMeal(meal);
+                GetNewMeal();                    
+            }
+
+            // megjeleníteni a kígyó új helyzetét
+
+            ShowSnakeTail(oldHead);
+
+            // Kígyó farok eltüntetése vagy meghagyása
+            if (!isEated) 
+            {
+                var tailEnd = Snake.Gamepoints[Snake.Gamepoints.Count - 1];
+                HideSnakeTail(tailEnd);
+                Snake.Gamepoints.Remove(tailEnd);
+            }
+
+            // Új fejet adunk a kígyóhoz
+            // Az új fejet a lista 0. helyére tesszük
+
+            Snake.Gamepoints.Insert(0, newHead);
+            ShowSnakeHead(newHead);
+
+            // kiírni a képernyőre
             ShowGameCounters();
+        }
+
+
+        private void GameOver()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -189,21 +270,25 @@ namespace Snake.Models
             // 2. nem kezeljük ha egy olyan helyre tesszük a csillagot ahol már van
             while (Meals.Count < ArenaSettings.MealsCountForStart)
             {
-                GamePoint meal = GetRandomGamePoint();
-
-                // Csak akkor továbmenni ha az étel még nincs a táblán és nem ütközik a kígyóval
-                if (!Meals.Any(gamePoint => gamePoint.X == meal.X && gamePoint.Y == meal.Y) && !Snake.Gamepoints.Any(gamePoint => gamePoint.X == meal.X && gamePoint.Y == meal.Y))
-                {
-                    // A megjelenítést és a hozzáadást csak akkor hagyja végre ha az if true-t ad vissza-t ad vissza
-                };
-
-                ShowMeal(meal);
-
-                // hozzáadnia listához
-                Meals.Add(meal);
+                GetNewMeal();
 
             }
 
+        }
+
+        private void GetNewMeal()
+        {
+            var meal = GetRandomGamePoint();
+
+            // Csak akkor továbmenni ha az étel még nincs a táblán és nem ütközik a kígyóval
+            if (!Meals.Any(gamePoint => gamePoint.X == meal.X && gamePoint.Y == meal.Y) && !Snake.Gamepoints.Any(gamePoint => gamePoint.X == meal.X && gamePoint.Y == meal.Y))
+            {
+                // hozzáadnia listához
+                Meals.Add(meal);
+
+                // A megjelenítést és a hozzáadást csak akkor hagyja végre ha az if true-t ad vissza-t ad vissza
+                ShowMeal(meal);
+            }
         }
 
         /// <summary>
@@ -219,6 +304,10 @@ namespace Snake.Models
             return gamePoint;
         }
 
+        /// <summary>
+        /// Megjelenítjük az ételt a táblán
+        /// </summary>
+        /// <param name="meal"></param>
         private void ShowMeal(GamePoint meal)
         {
             // megjelenítés
@@ -229,6 +318,21 @@ namespace Snake.Models
             child.Foreground = Brushes.Red;
             child.Spin = true;
             child.SpinDuration = 5;
+        }
+        
+        /// <summary>
+        /// eétüntetjüük az ételt   
+        /// </summary>
+        /// <param name="meal"></param>
+        private void HideMeal(GamePoint meal)
+        {
+            // megjelenítés
+            var child = GetGridArenaCell(meal);
+
+            // Children gyűjtemény uielementekből áll ahhoz hogy kibányásszuk a fontawesome vezérlőt elkell kérnünk a változózól
+            child.Icon = FontAwesome.WPF.FontAwesomeIcon.SquareOutline;
+            child.Foreground = Brushes.Black;
+            child.Spin = false;
         }
 
         private void ShowSnakeHead(GamePoint head)
@@ -253,6 +357,19 @@ namespace Snake.Models
             // Children gyűjtemény uielementekből áll ahhoz hogy kibányásszuk a fontawesome vezérlőt elkell kérnünk a változózól
             child.Icon = FontAwesome.WPF.FontAwesomeIcon.Circle;
             child.Foreground = Brushes.Blue;
+
+        }
+
+        /// Kígyó farok eltüntetése 
+        private void HideSnakeTail(GamePoint tailEnd)
+        {
+            // megjelenítés
+            var child = GetGridArenaCell(tailEnd);
+
+            // Children gyűjtemény uielementekből áll ahhoz hogy kibányásszuk a fontawesome vezérlőt elkell kérnünk a változózól
+            child.Icon = FontAwesome.WPF.FontAwesomeIcon.SquareOutline;
+            child.Foreground = Brushes.Black;
+            child.Spin = false;
 
         }
 
