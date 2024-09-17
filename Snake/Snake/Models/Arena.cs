@@ -147,7 +147,8 @@ namespace Snake.Models
             }
 
             if (newHead == null)
-            { // niincs új fej nincs mit tenni
+            {
+                // niincs új fej nincs mit tenni
                 return;
             }
             // le kell ellenőrizni hogy
@@ -162,13 +163,18 @@ namespace Snake.Models
                 GameOver();
             }
 
+            // Új fejet adunk a kígyóhoz
+            // Az új fejet a lista 0. helyére tesszük
+
+            Snake.Gamepoints.Insert(0, newHead);
+            ShowSnakeHead(newHead);
+
             //Megettünk-e ételt
 
             bool isEated = Meals.Any(gp => gp.X == newHead.X && gp.Y == newHead.Y);
             if (isEated) 
-            { // ételt evett 
-                Points += 1;
-                Snake.Length += 1;
+            { 
+                // ételt evett 
                 // Ezt az ételt ette
                 var meal = Meals.Single(gp => gp.X == newHead.X && gp.Y == newHead.Y);
                 HideMeal(meal);
@@ -187,11 +193,7 @@ namespace Snake.Models
                 Snake.Gamepoints.Remove(tailEnd);
             }
 
-            // Új fejet adunk a kígyóhoz
-            // Az új fejet a lista 0. helyére tesszük
-
-            Snake.Gamepoints.Insert(0, newHead);
-            ShowSnakeHead(newHead);
+            
 
             // kiírni a képernyőre
             ShowGameCounters();
