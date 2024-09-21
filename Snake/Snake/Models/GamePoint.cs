@@ -5,6 +5,7 @@
     /// </summary>
     public class GamePoint
     {
+
         public GamePoint(int x, int y)
         {
             X = x;

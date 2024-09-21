@@ -5,7 +5,7 @@
         /// <summary>
         /// A játéjkban egyszerre látható ételek száma
         /// </summary>
-        public static int MealsCountForStart { get; } = 8;
+        public static int MealsCountForStart { get; } = 3;
 
         /// <summary>
         /// A kígyó hoszza a játék kezdetén

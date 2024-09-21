@@ -20,30 +20,26 @@ namespace Snake.Models
         /// A játék ideje
         /// </summary>
         private TimeSpan PlayTime;
+
         /// <summary>
         /// A játék óra jelét adó időzítő
         /// </summary>
         private DispatcherTimer GameTimer;
+
         /// <summary>
         /// Képernyő amin a játék fut    
         /// </summary>
         private MainWindow MainWindow;
-        /// <summary>
-        /// Az aktuális játék pontszáma
-        /// </summary>
-        private int Points;
-        /// <summary>
-        /// Megevett ételek száma
-        /// </summary>
-        private int EatenMealsCount;
+
         /// <summary>
         /// Az aktuális játékban szereplő kígyó
         /// </summary>
         private Snake Snake;
+
         /// <summary>
         /// Az ételek aktuális listája amit a kígyó megehet
         /// </summary>
-        private List<GamePoint> Meals;
+        private List<Meal> Meals;
 
         /// <summary>
         /// Véletlenszámgenerátor
@@ -148,7 +144,7 @@ namespace Snake.Models
 
             if (newHead == null)
             {
-                // niincs új fej nincs mit tenni
+                // nincs új fej nincs mit tenni
                 return;
             }
             // le kell ellenőrizni hogy
@@ -177,8 +173,15 @@ namespace Snake.Models
                 // ételt evett 
                 // Ezt az ételt ette
                 var meal = Meals.Single(gp => gp.X == newHead.X && gp.Y == newHead.Y);
+
+                Snake.Eat(meal);
+                   
                 HideMeal(meal);
-                GetNewMeal();                    
+
+                while (Meals.Count < ArenaSettings.MealsCountForStart)
+                {
+                    GetNewMeal();
+                }
             }
 
             // megjeleníteni a kígyó új helyzetét
@@ -202,7 +205,7 @@ namespace Snake.Models
 
         private void GameOver()
         {
-            throw new NotImplementedException();
+               throw new NotImplementedException();
         }
 
         /// <summary>
@@ -212,8 +215,8 @@ namespace Snake.Models
         {
             // Kiírni a képernyőre
             MainWindow.LabelPlayTime.Content = $"Játék idő: {PlayTime.ToString("mm\\:ss")}";
-            MainWindow.LabelPoints.Content = $"Pontszám: {Points}";
-            MainWindow.LabelEatenMealCount.Content = $"Megevett ételek: {EatenMealsCount}";
+            MainWindow.LabelPoints.Content = $"Pontszám: {Snake.Points}";
+            MainWindow.LabelEatenMealCount.Content = $"Megevett ételek: {Snake.EatenMealsCount}";
             MainWindow.LabelSnakeLength.Content = $"Kígyó hossza: {Snake.Length}";
             MainWindow.LabelKeyDown.Content = $"{Snake.Directon}";
         }
@@ -225,8 +228,7 @@ namespace Snake.Models
         {
             // Pontszámok nullázása
             PlayTime = TimeSpan.FromSeconds(0);
-            Points = 0;
-            EatenMealsCount = 0;
+            
             Snake = new Snake();
         }
 
@@ -236,7 +238,7 @@ namespace Snake.Models
             Snake.Gamepoints = new List<GamePoint>();
 
             // kígyó fejét generáljuk
-            var head = GetRandomGamePoint();
+            var head = GetRandomMeal();
 
             Snake.Gamepoints.Add(head);            
 
@@ -265,7 +267,7 @@ namespace Snake.Models
         private void SetMealsForStart()
         {
            
-           Meals = new List<GamePoint>();
+           Meals = new List<Meal>();
 
             // Ez így már műödik de:
             // 1.Kibányászást függvénybe kell szervezni
@@ -273,14 +275,13 @@ namespace Snake.Models
             while (Meals.Count < ArenaSettings.MealsCountForStart)
             {
                 GetNewMeal();
-
             }
 
         }
 
         private void GetNewMeal()
         {
-            var meal = GetRandomGamePoint();
+            var meal = GetRandomMeal();
 
             // Csak akkor továbmenni ha az étel még nincs a táblán és nem ütközik a kígyóval
             if (!Meals.Any(gamePoint => gamePoint.X == meal.X && gamePoint.Y == meal.Y) && !Snake.Gamepoints.Any(gamePoint => gamePoint.X == meal.X && gamePoint.Y == meal.Y))
@@ -294,16 +295,19 @@ namespace Snake.Models
         }
 
         /// <summary>
-        /// Kijelöl a táblán egy véletlenszerű pontot
+        /// eétüntetjüük az ételt   
         /// </summary>
-        /// <returns></returns>
-        private GamePoint GetRandomGamePoint()
+        /// <param name="meal"></param>
+        private void HideMeal(Meal meal)
         {
-            var x = randomNumberGenerator.Next(1, ArenaSettings.maxX + 1);
-            var y = randomNumberGenerator.Next(1, ArenaSettings.maxY + 1);
+            Meals.Remove(meal);
+            // megjelenítés
+            var child = GetGridArenaCell(meal);
 
-            var gamePoint = new GamePoint(x: x, y: y);
-            return gamePoint;
+            // Children gyűjtemény uielementekből áll ahhoz hogy kibányásszuk a fontawesome vezérlőt elkell kérnünk a változózól
+            child.Icon = FontAwesome.WPF.FontAwesomeIcon.SquareOutline;
+            child.Foreground = Brushes.Black;
+            child.Spin = false;
         }
 
         /// <summary>
@@ -320,21 +324,6 @@ namespace Snake.Models
             child.Foreground = Brushes.Red;
             child.Spin = true;
             child.SpinDuration = 5;
-        }
-        
-        /// <summary>
-        /// eétüntetjüük az ételt   
-        /// </summary>
-        /// <param name="meal"></param>
-        private void HideMeal(GamePoint meal)
-        {
-            // megjelenítés
-            var child = GetGridArenaCell(meal);
-
-            // Children gyűjtemény uielementekből áll ahhoz hogy kibányásszuk a fontawesome vezérlőt elkell kérnünk a változózól
-            child.Icon = FontAwesome.WPF.FontAwesomeIcon.SquareOutline;
-            child.Foreground = Brushes.Black;
-            child.Spin = false;
         }
 
         private void ShowSnakeHead(GamePoint head)
@@ -373,6 +362,19 @@ namespace Snake.Models
             child.Foreground = Brushes.Black;
             child.Spin = false;
 
+        }
+        
+        /// <summary>
+        /// Kijelöl a táblán egy véletlenszerű pontot
+        /// </summary>
+        /// <returns></returns>
+        private Meal GetRandomMeal()
+        {
+            var x = randomNumberGenerator.Next(1, ArenaSettings.maxX + 1);
+            var y = randomNumberGenerator.Next(1, ArenaSettings.maxY + 1);
+
+            var meal = new Meal(x: x, y: y);
+            return meal;
         }
 
         private FontAwesome.WPF.ImageAwesome GetGridArenaCell(GamePoint gamePoint)

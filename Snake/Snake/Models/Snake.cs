@@ -41,6 +41,26 @@ namespace Snake.Models
              
         }
 
+        /// <summary>
+        /// Megevett étwelek száma
+        /// </summary>
+        public int EatenMealsCount { get; private set; } = 0;
+
+        /// <summary>
+        /// Pontszám
+        /// </summary>
+        public int Points { get; private set; } = 0;
+
+        /// <summary>
+        /// a kígyó megevett egy ételt
+        /// </summary>
+        /// <param name="meal">a megevett étel</param>
+        public void Eat(Meal meal)
+        {
+            ++EatenMealsCount;
+            Points += meal.Points;
+        }
+
         /// Property tulajdonságai (fieldhez képest):
         /// külön lehet szabályozni hogy írható és olvasható-e?
         /// get: olvasható
