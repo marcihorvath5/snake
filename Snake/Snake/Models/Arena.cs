@@ -247,7 +247,7 @@ namespace Snake.Models
             // Új fejet adunk a kígyóhoz
             // Az új fejet a lista 0. helyére tesszük
 
-            Snake.Gamepoints.Insert(0, newHead);
+            Snake.Head = newHead;
             ShowSnakeHead(newHead);
 
             //Megettünk-e ételt
@@ -276,7 +276,7 @@ namespace Snake.Models
             // Kígyó farok eltüntetése vagy meghagyása
             if (!isEated) 
             {
-                var tailEnd = Snake.Gamepoints[Snake.Gamepoints.Count - 1];
+                var tailEnd = Snake.TailEnd;
                 HideSnakeTail(tailEnd);
                 Snake.Gamepoints.Remove(tailEnd);
             }
@@ -380,7 +380,7 @@ namespace Snake.Models
         }
 
         /// <summary>
-        /// eétüntetjüük az ételt   
+        /// eltüntetjüük az ételt   
         /// </summary>
         /// <param name="meal"></param>
         private void HideMeal(Meal meal)

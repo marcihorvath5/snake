@@ -58,14 +58,31 @@ namespace Snake.Models
             {
                 return Gamepoints[0];
             }
+
+            // Függvény aminek 1 paramétere van ennek típusa a property típusa
+            // Nincs visszatérési értéke
+            set
+            {
+                Gamepoints.Insert(0, value);
+            }
+
         }
 
         public GamePoint Neck 
         { 
+            // Függvény aminek nincs paramétere és a visszatérési értéke a property típusa
             get
             {
                 return Gamepoints[1];
             }
+        }
+
+        public GamePoint TailEnd 
+        {
+            get 
+            {
+                return Gamepoints[Gamepoints.Count- 1];
+            } 
         }
 
         /// <summary>
@@ -87,5 +104,35 @@ namespace Snake.Models
         /// private set: csak osztályon belül használható
         /// 
         /// Működése implemenálható: saját kóddal adhatom meg hogy mit tegyen
+        /// 
+
+        /// A C# fordító ha nem implementálunk gettert és settert, 
+        /// akkor elfogadja ezt a szintaxist:
+        //public int MyProperty { get; set; }
+
+        /// A fordító ebből egy ilyet csinál (property default implementáció
+        //private int _myProperty;
+        //public int MyProperty
+        //{
+        //    get
+        //    {
+        //        return _myProperty;
+        //    }
+        //    set
+        //    {
+        //        _myProperty = value;
+        //    }
+        //}
+
+        ///És ez egyenértékű ezzel:
+        //private int _myProperty;
+        //public int MyProperty_Get()
+        //{
+        //    return _myProperty;
+        //}
+        //public void MyProperty_Set(int value)
+        //{
+        //    _myProperty = value;
+        //}
     }
 }
