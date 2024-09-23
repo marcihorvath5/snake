@@ -87,23 +87,108 @@ namespace Snake.Models
         /// </summary>
         internal void Keydown(Key key)
         {
-            // A leütött billentyű jelzi merre kéne mennie a kígyónak
-            switch (key)
+
+            if (ArenaSettings.IsSittingInTheHeadOfSnake)
+            {// a kígyó fejében ülünk
+             // A leütött billentyű jelzi merre kéne mennie a kígyónak
+                switch (key)
+                {
+                    case Key.Left:
+                        switch (Snake.Directon)
+                        {
+                            case SnakeDirections.None:
+                                var head = Snake.Head;
+                                var neck = Snake.Neck;
+
+                                if(head.X < neck.X)
+                                {// a kígyó balra áll
+                                    Snake.Directon = SnakeDirections.Down;
+                                }
+                                else
+                                {
+                                    Snake.Directon = SnakeDirections.Up;
+                                }
+
+                                break;
+                            case SnakeDirections.Left:
+                                Snake.Directon = SnakeDirections.Down;
+                                break;
+                            case SnakeDirections.Right:
+                                Snake.Directon = SnakeDirections.Up;
+                                break;
+                            case SnakeDirections.Up:
+                                Snake.Directon = SnakeDirections.Left;
+                                break;
+                            case SnakeDirections.Down:
+                                Snake.Directon = SnakeDirections.Right;
+                                break;
+                            default:
+                                throw new Exception($"Erre az irányra  nem vagyunk felkészülve {Snake.Directon}");
+                                
+                        }
+                        break;
+                    case Key.Right:
+                        switch (Snake.Directon)
+                        {
+                            case SnakeDirections.None:
+                                var head = Snake.Head;
+                                var neck = Snake.Neck;
+
+                                if (head.X < neck.X)
+                                {
+                                    Snake.Directon = SnakeDirections.Up;
+                                }
+                                else
+                                {
+                                    Snake.Directon = SnakeDirections.Down;
+                                }
+                                break;
+                            case SnakeDirections.Left:
+                                Snake.Directon = SnakeDirections.Up;
+                                break;
+                            case SnakeDirections.Right:
+                                Snake.Directon = SnakeDirections.Down;
+                                break;
+                            case SnakeDirections.Up:
+                                Snake.Directon = SnakeDirections.Right;
+                                break;
+                            case SnakeDirections.Down:
+                                Snake.Directon = SnakeDirections.Left;
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case Key.Up:
+                    case Key.Down:
+                        // Ezekben az esetekben nem változik a kígyó motgása a gombok nem élnek
+                        break;
+                    default:
+                        throw new Exception($"Erre a gombra  nem vagyunk felkészülve {key}");
+                       
+                }
+
+            }
+            else
             {
-                case Key.Left:
-                    Snake.Directon = SnakeDirections.Left;
-                    break;
-                case Key.Up:
-                    Snake.Directon = SnakeDirections.Up;
-                    break;
-                case Key.Right:
-                    Snake.Directon = SnakeDirections.Right;
-                    break;
-                case Key.Down:
-                    Snake.Directon = SnakeDirections.Down;
-                    break;
-                default:
-                    throw new Exception($"Erre a gombra  nem vagyunk felkészülve {key}");
+                // A leütött billentyű jelzi merre kéne mennie a kígyónak
+                switch (key)
+                {
+                    case Key.Left:
+                        Snake.Directon = SnakeDirections.Left;
+                        break;
+                    case Key.Up:
+                        Snake.Directon = SnakeDirections.Up;
+                        break;
+                    case Key.Right:
+                        Snake.Directon = SnakeDirections.Right;
+                        break;
+                    case Key.Down:
+                        Snake.Directon = SnakeDirections.Down;
+                        break;
+                    default:
+                        throw new Exception($"Erre a gombra  nem vagyunk felkészülve {key}");
+                }
             }
         }
 
@@ -119,7 +204,7 @@ namespace Snake.Models
 
             // A kígyó feje mozog a kijelölt irányba
 
-            var oldHead = Snake.Gamepoints[0];
+            var oldHead = Snake.Head;
             GamePoint newHead = null;
 
             switch (Snake.Directon)

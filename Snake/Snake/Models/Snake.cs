@@ -36,13 +36,11 @@ namespace Snake.Models
              
                 // GamePoints?.Count: ha a gamepoints értéke null, akkor a végeredmény null, ha nem akkor veszi a Count propertyjét
                 // a ?? b: ha a értéke null, akkor b a visszatérés ha nem akkor a aa visszatérés
-                //return Gamepoints?.Count ?? 0;
-                
-             
+                //return Gamepoints?.Count ?? 0;             
         }
 
         /// <summary>
-        /// Megevett étwelek száma
+        /// Megevett ételek száma
         /// </summary>
         public int EatenMealsCount { get; private set; } = 0;
 
@@ -50,6 +48,25 @@ namespace Snake.Models
         /// Pontszám
         /// </summary>
         public int Points { get; private set; } = 0;
+
+        /// <summary>
+        /// Vissza adja a kígyó fejét
+        /// </summary>
+        public GamePoint Head 
+        { 
+            get
+            {
+                return Gamepoints[0];
+            }
+        }
+
+        public GamePoint Neck 
+        { 
+            get
+            {
+                return Gamepoints[1];
+            }
+        }
 
         /// <summary>
         /// a kígyó megevett egy ételt

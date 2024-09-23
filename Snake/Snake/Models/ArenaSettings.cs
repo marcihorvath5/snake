@@ -1,4 +1,6 @@
-﻿namespace Snake.Models
+﻿using System.Reflection.Metadata;
+
+namespace Snake.Models
 {
     public class ArenaSettings
     {
@@ -21,6 +23,10 @@
         /// A játék maximum y koordinátája
         /// </summary>
         public static int maxY { get; } = 20;
-       
+
+        /// <summary>
+        /// Megmondja hogy a kígyó fejében ülünk vagy kívültről irányítjuk a játékot?
+        /// </summary>
+        public static bool IsSittingInTheHeadOfSnake { get; } = false;
     }
 }
