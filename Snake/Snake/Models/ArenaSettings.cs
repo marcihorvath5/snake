@@ -2,7 +2,7 @@
 
 namespace Snake.Models
 {
-    public class ArenaSettings
+    public static class ArenaSettings
     {
         /// <summary>
         /// A játéjkban egyszerre látható ételek száma
