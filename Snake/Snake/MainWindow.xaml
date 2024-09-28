@@ -7,11 +7,12 @@
         mc:Ignorable="d"
         KeyDown="Window_KeyDown"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="850">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
@@ -38,7 +39,7 @@
                     FontWeight="Bold" 
                     Click="ButtonStart_Click" />
 
-            <Label Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Bottom" x:Name="LabelKeyDown"/>
+            <Label Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Top" x:Name="LabelKeyDown"/>
 
             <Button x:Name="ButtonStop"
                     Content="Stop" 
@@ -524,5 +525,12 @@
             <fa:ImageAwesome Icon="SquareOutline" Grid.Column="20" Grid.Row="20"/>
 
         </Grid>
+        <Canvas Grid.Column="2" 
+                Background="AntiqueWhite" 
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Margin="10"
+                x:Name="CanvasArena"/>
     </Grid>
+    
 </Window>
